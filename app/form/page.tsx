@@ -1,6 +1,7 @@
 /* eslint-disable react/jsx-no-duplicate-props */
 "use client";
-import { useState, ChangeEvent } from "react";
+import { useState, ChangeEvent, useEffect } from "react";
+import { z } from 'zod';
 
 const ChatBotForm = () => {
   const [mathsScore, setMathsScore] = useState<string>("");
@@ -11,49 +12,48 @@ const ChatBotForm = () => {
   const [errorColors, setErrorColors] = useState<{ [key: string]: string }>({});
 
   const handleMathsChange = (event: ChangeEvent<HTMLInputElement>) => {
-    setMathsScore(event.target.value);
-    calculatecutoff();
-  };
-
-  const handlePhysicsChange = (event: ChangeEvent<HTMLInputElement>) => {
-    setPhysicsScore(event.target.value);
-    calculatecutoff();
-  };
-
-  const handleChemistryChange = (event: ChangeEvent<HTMLInputElement>) => {
-    setChemistryScore(event.target.value);
-    calculatecutoff();
-  };
-
-  const calculatecutoff = () => {
-    setErrors({});
-    setErrorColors({});
-
-    const parseInput = (input: string, subject: string): number => {
-      const value = parseFloat(input) || 0;
-      if (value < 0 || value > 100 || isNaN(value)) {
-        setErrors((prevErrors) => ({
-          ...prevErrors,
-          [subject]: "Invalid marks! Please enter a value between 0 and 100.",
-        }));
-        setErrorColors((prevColors) => ({
-          ...prevColors,
-          [subject]: "red",
-        }));
-        return 0;
-      }
-      return value;
+      setMathsScore(event.target.value);
+      calculatecutoff();
     };
-    const maths = parseInput(mathsScore, "maths");
-    const physics_currentscore = parseInput(physicsScore, "physics");
-    const chemistry_currentscore = parseInput(chemistryScore, "chemistry");
-
-    const physics = physics_currentscore / 2;
-    const chemistry = chemistry_currentscore / 2;
-    const cutoff = maths + physics + chemistry;
-
-    setCutoffMarks(parseFloat(cutoff.toFixed(2)));
-  };
+    
+    const handlePhysicsChange = (event: ChangeEvent<HTMLInputElement>) => {
+        setPhysicsScore(event.target.value);
+        calculatecutoff();
+    };
+    
+    const handleChemistryChange = (event: ChangeEvent<HTMLInputElement>) => {
+        setChemistryScore(event.target.value);
+        calculatecutoff();
+    };
+    
+    const calculatecutoff = () => {
+        setErrors({});
+        setErrorColors({});
+        
+        const parseInput = (input: string, subject: string): number => {
+            const value = parseFloat(input) || 0;
+            if (value < 0 || value > 100 || isNaN(value)) {
+                setErrors((prevErrors) => ({
+                    ...prevErrors,
+                    [subject]: "Invalid marks! Please enter a value between 0 and 100.",
+                }));
+                setErrorColors((prevColors) => ({
+                    ...prevColors,
+                    [subject]: "red",
+                }));
+                return 0;
+            }
+            return value;
+        };
+        const maths = parseInput(mathsScore, "maths");
+        const physics_currentscore = parseInput(physicsScore, "physics");
+        const chemistry_currentscore = parseInput(chemistryScore, "chemistry");
+        const physics = physics_currentscore / 2;
+          const chemistry = chemistry_currentscore / 2;
+          const cutoff = maths + physics + chemistry;
+        setCutoffMarks(parseFloat(cutoff.toFixed(2)));
+    };
+    useEffect(() => {},[]);
 
   return (
     <div className="mt-6 grid place-items-center gap-4">
